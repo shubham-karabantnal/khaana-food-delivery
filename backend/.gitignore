@@ -1,0 +1,9 @@
+node_modules/
+.env
+
+# Debug and Scratch files
+*.txt
+test-*.js
+check_*.js
+isolate_detail.js
+scratch/
