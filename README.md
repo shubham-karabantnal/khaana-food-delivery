@@ -1,4 +1,4 @@
-# 🍲 Khaana – Food Ordering Platform
+‹# 🍲 Khaana – Food Ordering Platform
 
 Khaana is a full-stack food ordering and restaurant management web application built to deliver a seamless and modern user experience. It connects customers with restaurants through an intuitive UI and a robust backend system.
 
@@ -52,3 +52,16 @@ Khaana is a full-stack food ordering and restaurant management web application b
 ---
 
 ## 📁 Project Structure
+khaana-food-delivery/
+├── backend/
+├── frontend/
+└── README.md
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/shubham-karabantnal/khaana-food-delivery.git
+cd khaana-food-delivery
