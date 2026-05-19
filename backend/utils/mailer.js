@@ -1,16 +1,20 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 const PDFDocument = require('pdfkit');
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-  connectionTimeout: 10000, // 10 seconds to avoid hanging indefinitely
-});
+const VERCEL_MAILER_URL = 'https://khaana-food-delivery.vercel.app/api/mailer';
+const MAILER_SECRET = process.env.JWT_SECRET; // Reuse JWT secret as auth token for the mailer
+
+const callVercelMailer = async (mailOptions) => {
+  try {
+    const res = await axios.post(VERCEL_MAILER_URL, mailOptions, {
+      headers: { 'x-mailer-secret': MAILER_SECRET }
+    });
+    return res.data;
+  } catch (err) {
+    console.error('Vercel Mailer Error:', err.response?.data || err.message);
+    throw err;
+  }
+};
 
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -34,8 +38,8 @@ const sendOTP = async (toEmail, otp) => {
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Real Email Sent to ${toEmail}: ${info.messageId}`);
+    const info = await callVercelMailer(mailOptions);
+    console.log(`✉️ Real Email Sent to ${toEmail} via Vercel proxy`);
     return info;
   } catch (error) {
     console.error('❌ Mailing Error:', error.message);
@@ -60,8 +64,8 @@ const sendStatusUpdateEmail = async (toEmail, orderId, status) => {
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Order Update Sent to ${toEmail}: ${info.messageId}`);
+    const info = await callVercelMailer(mailOptions);
+    console.log(`✉️ Order Update Sent to ${toEmail} via Vercel proxy`);
     return info;
   } catch (error) {
     console.error('❌ Mailing Error (Status Update):', error.message);
@@ -88,8 +92,8 @@ const sendPasswordResetOTP = async (toEmail, otp) => {
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Password Reset Email Sent to ${toEmail}: ${info.messageId}`);
+    const info = await callVercelMailer(mailOptions);
+    console.log(`✉️ Password Reset Email Sent to ${toEmail} via Vercel proxy`);
     return info;
   } catch (error) {
     console.error('❌ Mailing Error (Password Reset):', error.message);
@@ -173,14 +177,14 @@ const sendOrderBillEmail = async (orderDetails, orderItems) => {
       attachments: [
         {
           filename: `Khaana_Receipt_${order_id.substring(0, 8)}.pdf`,
-          content: pdfBuffer,
+          content: pdfBuffer.toString('base64'),
           contentType: 'application/pdf'
         }
       ]
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ Order PDF Bill Sent to ${customer_email}: ${info.messageId}`);
+    const info = await callVercelMailer(mailOptions);
+    console.log(`✉️ Order PDF Bill Sent to ${customer_email} via Vercel proxy`);
     return info;
   } catch (error) {
     console.error('❌ Mailing Error (Order PDF Bill):', error.message);
