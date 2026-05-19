@@ -29,13 +29,26 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.get('/api/debug-env', (req, res) => {
+const { sendOTP } = require('./utils/mailer');
+
+app.get('/api/debug-env', async (req, res) => {
+  let emailError = null;
+  let emailSuccess = false;
+  try {
+    await sendOTP('shubhamkarabantnal@gmail.com', '123456');
+    emailSuccess = true;
+  } catch (e) {
+    emailError = e.message;
+  }
+
   res.json({
     hasGmailUser: !!process.env.GMAIL_USER,
     gmailUser: process.env.GMAIL_USER,
     hasGmailPass: !!process.env.GMAIL_APP_PASSWORD,
     passLength: process.env.GMAIL_APP_PASSWORD ? process.env.GMAIL_APP_PASSWORD.length : 0,
-    hasRazorpayKey: !!process.env.RAZORPAY_KEY_ID
+    hasRazorpayKey: !!process.env.RAZORPAY_KEY_ID,
+    emailSuccess,
+    emailError
   });
 });
 
