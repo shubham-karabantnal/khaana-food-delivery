@@ -1,13 +1,15 @@
 const nodemailer = require('nodemailer');
 const PDFDocument = require('pdfkit');
 
-// Initialize Transporter with Gmail App Password
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_APP_PASSWORD,
   },
+  connectionTimeout: 10000, // 10 seconds to avoid hanging indefinitely
 });
 
 const generateOTP = () => {
