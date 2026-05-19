@@ -103,7 +103,12 @@ const sendOrderBillEmail = async (orderDetails, orderItems) => {
     customer_name, customer_email, restaurant_name
   } = orderDetails;
 
-  const orderDate = new Date(created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+  let orderDate;
+  try {
+    orderDate = new Date(created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+  } catch (e) {
+    orderDate = new Date(created_at).toLocaleString();
+  }
 
   try {
     // Generate PDF in memory
