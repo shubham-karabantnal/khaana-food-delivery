@@ -29,6 +29,16 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/api/debug-env', (req, res) => {
+  res.json({
+    hasGmailUser: !!process.env.GMAIL_USER,
+    gmailUser: process.env.GMAIL_USER,
+    hasGmailPass: !!process.env.GMAIL_APP_PASSWORD,
+    passLength: process.env.GMAIL_APP_PASSWORD ? process.env.GMAIL_APP_PASSWORD.length : 0,
+    hasRazorpayKey: !!process.env.RAZORPAY_KEY_ID
+  });
+});
+
 // ─── Routes ──────────────────────────────────────────────────
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/restaurants', require('./routes/restaurants'));
