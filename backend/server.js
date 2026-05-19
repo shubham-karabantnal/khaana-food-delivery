@@ -9,7 +9,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ─── Middleware ───────────────────────────────────────────────
-app.use(cors());
+app.use(cors({
+  origin: [
+    /\.vercel\.app$/,         // all Vercel preview/prod domains
+    'http://localhost:5173',   // local dev
+    'http://localhost:3000',
+  ],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -51,13 +58,19 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// ─── Start Server ────────────────────────────────────────────
-app.listen(PORT, async () => {
-  console.log(`🍛 Khaana API running on http://localhost:${PORT}`);
-  try {
-    const res = await query('SELECT NOW()');
-    console.log('✅ Database connected at:', res.rows[0].now);
-  } catch (err) {
-    console.error('❌ Database connection failed:', err.message);
-  }
-});
+// ─── Start Server (local dev only) ──────────────────────────
+// In production (Vercel), the app is exported as a serverless function.
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, async () => {
+    console.log(`🍛 Khaana API running on http://localhost:${PORT}`);
+    try {
+      const res = await query('SELECT NOW()');
+      console.log('✅ Database connected at:', res.rows[0].now);
+    } catch (err) {
+      console.error('❌ Database connection failed:', err.message);
+    }
+  });
+}
+
+// ─── Export for Vercel Serverless ────────────────────────────
+module.exports = app;
