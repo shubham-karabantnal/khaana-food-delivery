@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/(?!mailer)(.*)",
-      "destination": "https://khaana-api.onrender.com/api/$1"
+      "source": "/backend-api/:path*",
+      "destination": "https://khaana-api.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",

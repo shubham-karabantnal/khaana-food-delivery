@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // All API requests go to /api — proxied to backend via Vite (dev) or Vercel rewrites (prod)
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: '/backend-api',
   headers: {
     'Content-Type': 'application/json',
   },
