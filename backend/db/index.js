@@ -18,7 +18,7 @@ pool.on('connect', () => {
 
 pool.on('error', (err) => {
   console.error('❌ Unexpected PostgreSQL error:', err);
-  process.exit(-1);
+  // Do NOT call process.exit() here — it crashes Vercel serverless functions
 });
 
 // Helper: execute a raw SQL query
