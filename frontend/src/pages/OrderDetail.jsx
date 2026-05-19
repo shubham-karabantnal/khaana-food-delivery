@@ -10,7 +10,7 @@ function OrderDetail() {
   const [order, setOrder] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Review form state
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
@@ -23,7 +23,7 @@ function OrderDetail() {
         const res = await api.get(`/orders/${id}`);
         setOrder(res.data.order);
         setItems(res.data.items);
-        
+
         // Check if user already reviewed this order
         const reviewsRes = await api.get(`/reviews/restaurant/${res.data.order.restaurant_id}`);
         const existingReview = reviewsRes.data.find(r => r.order_id === id);
@@ -87,9 +87,8 @@ function OrderDetail() {
               </div>
               {statusSteps.map((step, i) => (
                 <div key={step} className="relative z-10 flex flex-col items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                    i <= currentStep ? 'bg-primary-500 text-white shadow-md' : 'bg-gray-200 text-gray-400'
-                  }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${i <= currentStep ? 'bg-primary-500 text-white shadow-md' : 'bg-gray-200 text-gray-400'
+                    }`}>
                     {i <= currentStep ? '✓' : i + 1}
                   </div>
                   <span className={`text-xs mt-2 font-medium capitalize ${i <= currentStep ? 'text-primary-600' : 'text-gray-400'}`}>
@@ -143,9 +142,8 @@ function OrderDetail() {
                     key={star}
                     type="button"
                     onClick={() => setRating(star)}
-                    className={`text-3xl transition-transform hover:scale-125 ${
-                      star <= rating ? 'text-yellow-400' : 'text-gray-200'
-                    }`}
+                    className={`text-3xl transition-transform hover:scale-125 ${star <= rating ? 'text-yellow-400' : 'text-gray-200'
+                      }`}
                   >
                     ★
                   </button>

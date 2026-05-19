@@ -6,13 +6,13 @@ const cors = require('cors');
 const { query } = require('./db');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // ─── Middleware ───────────────────────────────────────────────
 app.use(cors({
   origin: [
-    /\.vercel\.app$/,         // all Vercel preview/prod domains
-    'http://localhost:5173',   // local dev
+    /\.vercel\.app$/,          // all Vercel preview/prod domains
+    'http://localhost:5173',    // local dev
     'http://localhost:3000',
   ],
   credentials: true,
@@ -29,22 +29,17 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ─── Routes (will be added phase by phase) ───────────────────
+// ─── Routes ──────────────────────────────────────────────────
 app.use('/api/auth', require('./routes/auth'));
-// Phase 3:
 app.use('/api/restaurants', require('./routes/restaurants'));
 app.use('/api/menu', require('./routes/menu'));
 app.use('/api/upload', require('./routes/upload'));
-// Phase 4:
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/admin', require('./routes/admin'));
-// Phase 6:
 app.use('/api/addresses', require('./routes/addresses'));
-
-// Computed Stats:
 app.use('/api/stats', require('./routes/stats'));
 
 // ─── 404 Handler ─────────────────────────────────────────────
@@ -58,19 +53,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// ─── Start Server (local dev only) ──────────────────────────
-// In production (Vercel), the app is exported as a serverless function.
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, async () => {
-    console.log(`🍛 Khaana API running on http://localhost:${PORT}`);
-    try {
-      const res = await query('SELECT NOW()');
-      console.log('✅ Database connected at:', res.rows[0].now);
-    } catch (err) {
-      console.error('❌ Database connection failed:', err.message);
-    }
-  });
-}
+// ─── Start Server ────────────────────────────────────────────
+app.listen(PORT, async () => {
+  console.log(`🍛 Khaana API running on http://localhost:${PORT}`);
+  try {
+    const res = await query('SELECT NOW()');
+    console.log('✅ Database connected at:', res.rows[0].now);
+  } catch (err) {
+    console.error('❌ Database connection failed:', err.message);
+  }
+});
 
-// ─── Export for Vercel Serverless ────────────────────────────
 module.exports = app;

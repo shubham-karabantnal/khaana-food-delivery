@@ -5,7 +5,8 @@ const crypto = require('crypto');
 const { query } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
 
-const razorpay = new Razorpay({
+// Lazy init — avoids crash on startup if env vars aren't loaded yet
+const getRazorpay = () => new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
@@ -35,7 +36,7 @@ router.post('/create-order', authenticateToken, async (req, res) => {
       receipt: `receipt_${order_id.substring(0, 10)}`,
     };
 
-    const rzpOrder = await razorpay.orders.create(options);
+    const rzpOrder = await getRazorpay().orders.create(options);
 
     // 3. Store payment record in DB
     await query(
