@@ -30,6 +30,8 @@ function Login() {
       // If user is not verified, redirect to OTP page
       if (error.response?.data?.notVerified) {
         navigate('/verify-otp', { state: { email: error.response.data.email } });
+      } else {
+        toast.error(error.response?.data?.error || 'Failed to login');
       }
     } finally {
       setIsSubmitting(false);
